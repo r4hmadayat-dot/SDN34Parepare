@@ -1,5 +1,5 @@
-// URL Web App Google Apps Script Anda (deployment /exec).
-// Jangan masukkan password/PIN ke file ini.
+// Isi dengan URL Web App Apps Script Anda yang berakhiran /exec.
+// Contoh: https://script.google.com/macros/s/XXXXXXXX/exec
 const APP_CONFIG = {
-  appUrl: 'PASTE_URL_WEB_APP_APPS_SCRIPT_DI_SINI'
+  appUrl: 'https://script.google.com/macros/s/AKfycbxGjUaLc5aZmA5GKQZuDg6Nw_IiyiMboL3xwmjyPKEMoQ2CwvFwCNHGyJeHfvV2PlaqFw/exec'
 };
