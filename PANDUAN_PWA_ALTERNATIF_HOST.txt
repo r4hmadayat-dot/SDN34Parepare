@@ -1,0 +1,18 @@
+PILIHAN HOSTING PWA SELAIN GITHUB PAGES
+
+1. Cloudflare Pages
+- Buat project baru.
+- Hubungkan repository GitHub atau upload file statis.
+- Pastikan index.html menjadi root.
+- Cloudflare Pages menyediakan HTTPS.
+
+2. Netlify
+- Buat site baru.
+- Drag-and-drop folder hasil ekstrak atau hubungkan repository.
+- Pastikan index.html berada di root.
+- Gunakan URL HTTPS Netlify untuk instalasi.
+
+3. GitHub Pages
+- Cara paling sederhana untuk paket ini.
+- Tidak memerlukan build system.
+- Cocok untuk file HTML/CSS/JS statis.

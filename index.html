@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1677e8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png">
+  <title>Kehadiran Guru</title>
+  <style>
+    :root{--primary:#1677e8;--bg:#eef3f9;--text:#17304f;--muted:#6d7e91;--line:#dfe7f0}
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text)}
+    body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+    .app{width:100%;height:100%;position:relative;background:var(--bg)}
+    iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:white}
+    .install{position:fixed;right:14px;bottom:18px;z-index:20;display:none;border:0;border-radius:14px;padding:11px 15px;background:var(--primary);color:#fff;font-weight:800;box-shadow:0 8px 25px rgba(18,74,135,.25)}
+    .notice{position:fixed;left:14px;right:14px;bottom:18px;z-index:19;display:none;background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 14px;box-shadow:0 10px 28px rgba(31,55,85,.12);font-size:12px;line-height:1.4}
+    .notice b{display:block;font-size:13px;margin-bottom:3px}
+    .notice .close{float:right;border:0;background:transparent;font-size:18px;color:var(--muted)}
+    .loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:linear-gradient(180deg,#f6f9fd,#eef3f9);z-index:5}
+    .logo{width:72px;height:72px;border-radius:22px;box-shadow:0 10px 25px rgba(22,119,232,.18)}
+    .loader strong{font-size:18px}.loader span{font-size:12px;color:var(--muted)}
+    @media(max-width:520px){.install{bottom:calc(14px + env(safe-area-inset-bottom));font-size:12px}.notice{bottom:calc(14px + env(safe-area-inset-bottom))}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="loader" id="loader">
+      <img class="logo" src="./icons/icon-192.png" alt="Kehadiran Guru">
+      <strong>Kehadiran Guru</strong>
+      <span>Memuat aplikasi…</span>
+    </div>
+    <iframe id="appFrame" title="Kehadiran Guru" allow="geolocation" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    <button id="installBtn" class="install">📲 Pasang Aplikasi</button>
+    <div id="notice" class="notice">
+      <button class="close" onclick="hideNotice()">×</button>
+      <b>Instalasi PWA</b>
+      Jika tombol pasang tidak muncul, buka menu browser ⋮ lalu pilih <b>Tambahkan ke layar utama</b> setelah situs ini diterbitkan melalui HTTPS.
+    </div>
+  </div>
+  <script src="./config.js"></script>
+  <script>
+    const frame=document.getElementById('appFrame');
+    const loader=document.getElementById('loader');
+    const installBtn=document.getElementById('installBtn');
+    const notice=document.getElementById('notice');
+    if(!APP_CONFIG || !APP_CONFIG.appUrl || !/^https:\/.+/.test(APP_CONFIG.appUrl)){
+      loader.querySelector('strong').textContent='URL aplikasi belum diatur';
+      loader.querySelector('span').textContent='Edit config.js lalu isi URL Web App /exec.';
+    } else {
+      frame.src=APP_CONFIG.appUrl;
+    }
+    frame.addEventListener('load',()=>{ loader.style.display='none'; });
+    let deferredPrompt=null;
+    window.addEventListener('beforeinstallprompt',e=>{
+      e.preventDefault(); deferredPrompt=e; installBtn.style.display='block';
+    });
+    installBtn.addEventListener('click',async()=>{
+      if(!deferredPrompt){ notice.style.display='block'; return; }
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt=null; installBtn.style.display='none';
+    });
+    window.addEventListener('appinstalled',()=>{installBtn.style.display='none';});
+    function hideNotice(){notice.style.display='none'}
+    if('serviceWorker' in navigator){
+      window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('SW',err)));
+    }
+  </script>
+</body>
+</html>
