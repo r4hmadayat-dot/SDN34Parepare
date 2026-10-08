@@ -1,97 +1,53 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#1677e8">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./icons/icon-192.png">
-  <title>Kehadiran Guru</title>
-  <style>
-    :root{--primary:#1677e8;--bg:#f3f7fc;--text:#17304f;--muted:#6d7e91;--line:#dfe7f0}
-    *{box-sizing:border-box}
-    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text)}
-    .app{position:relative;width:100%;height:100dvh;min-height:100vh;background:var(--bg)}
-    iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;display:none}
-    .loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:linear-gradient(180deg,#f8fbff,#eef3f9);padding:24px;text-align:center}
-    .logo{width:84px;height:84px;border-radius:24px;object-fit:contain;background:#fff;box-shadow:0 10px 25px rgba(22,119,232,.15)}
-    .loader strong{font-size:20px}.loader span{font-size:13px;color:var(--muted);max-width:440px;line-height:1.5}
-    .loader .error{display:none;margin-top:4px;padding:14px 16px;border:1px solid #f1caca;background:#fff6f6;border-radius:14px;color:#9f2d2d;max-width:520px;font-size:13px;line-height:1.5}
-    .install{position:fixed;right:14px;bottom:18px;z-index:20;display:none;border:0;border-radius:14px;padding:12px 16px;background:var(--primary);color:#fff;font-weight:800;box-shadow:0 8px 25px rgba(18,74,135,.25)}
-    .notice{position:fixed;left:14px;right:14px;bottom:18px;z-index:19;display:none;background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 14px;box-shadow:0 10px 28px rgba(31,55,85,.12);font-size:12px;line-height:1.4}
-    .notice b{display:block;font-size:13px;margin-bottom:3px}.notice .close{float:right;border:0;background:transparent;font-size:18px;color:var(--muted)}
-    .retry{display:none;margin-top:8px;border:0;border-radius:12px;padding:11px 16px;background:#eaf3ff;color:#0b57b0;font-weight:800}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0877e8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>Presensi Guru - UPTD SDN 34 Parepare</title>
+<style>
+:root{--p:#0877e8;--bg:#eef4fb;--text:#162235;--muted:#6f7e91}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--text)}.app{width:100%;height:100dvh;position:relative}.loader{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:24px;background:linear-gradient(160deg,#fbfdff,#eef4fb);z-index:5}.logo-box{width:120px;height:120px;padding:9px;border-radius:30px;background:#fff;display:grid;place-items:center;box-shadow:0 18px 46px rgba(20,70,120,.14);border:1px solid rgba(20,70,120,.08)}.logo-box img{width:100%;height:100%;object-fit:contain;border-radius:22px}.school{font-size:14px;font-weight:900;color:#0d5fae;text-align:center}.loader-title{font-size:26px;font-weight:950}.loader-status{font-size:13px;color:var(--muted)}.loader-error{display:none;max-width:560px;padding:12px 14px;border-radius:14px;background:#fff5f5;border:1px solid #edc7ca;color:#9e2027;text-align:center}.retry,.install{border:0;border-radius:14px;padding:12px 18px;font-weight:900}.retry{display:none;background:#eaf3ff;color:#0a5fae}.install{position:fixed;right:15px;bottom:15px;z-index:20;background:var(--p);color:#fff;box-shadow:0 12px 28px rgba(8,119,232,.24);display:none}iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:#fff}@media(max-width:600px){.logo-box{width:100px;height:100px}.loader-title{font-size:22px}.school{font-size:13px}}
+</style>
 </head>
 <body>
-  <main class="app">
-    <section class="loader" id="loader" aria-live="polite">
-      <img class="logo" src="./icons/icon-192.png" alt="Kehadiran Guru">
-      <strong id="loaderTitle">Kehadiran Guru</strong>
-      <span id="loaderText">Memuat aplikasi…</span>
-      <div id="loaderError" class="error"></div>
-      <button id="retryBtn" class="retry" type="button">Coba Lagi</button>
-    </section>
-    <iframe id="appFrame" title="Kehadiran Guru" allow="geolocation" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-    <button id="installBtn" class="install" type="button">📲 Pasang Aplikasi</button>
-    <div id="notice" class="notice">
-      <button class="close" type="button" onclick="hideNotice()">×</button>
-      <b>Instalasi PWA</b>
-      Gunakan menu browser untuk <b>Tambahkan ke layar utama</b> atau tombol pasang yang tersedia.
-    </div>
-  </main>
-  <script src="./config.js"></script>
-  <script>
-    const frame=document.getElementById('appFrame');
-    const loader=document.getElementById('loader');
-    const loaderTitle=document.getElementById('loaderTitle');
-    const loaderText=document.getElementById('loaderText');
-    const loaderError=document.getElementById('loaderError');
-    const retryBtn=document.getElementById('retryBtn');
-    const installBtn=document.getElementById('installBtn');
-    const notice=document.getElementById('notice');
-    let deferredPrompt=null;
-    function showError(title,msg){
-      loaderTitle.textContent=title;
-      loaderText.textContent='';
-      loaderError.textContent=msg;
-      loaderError.style.display='block';
-      retryBtn.style.display='inline-block';
-    }
-    function loadApp(){
-      loaderError.style.display='none'; retryBtn.style.display='none';
-      loaderTitle.textContent='Kehadiran Guru'; loaderText.textContent='Memuat aplikasi…'; loader.style.display='flex'; frame.style.display='none';
-      if(location.hostname.includes('script.google.com')){
-        showError('PWA belum ditempatkan dengan benar','Jangan memasukkan index.html PWA ini ke project Google Apps Script. Host folder PWA melalui HTTPS, misalnya GitHub Pages, lalu isi config.js dengan URL Web App /exec.');
-        return;
-      }
-      const url=String(window.APP_CONFIG?.appUrl||'').trim();
-      if(!/^https:\/\//i.test(url) || !/\/exec(?:[?#].*)?$/i.test(url)){
-        showError('URL Web App belum diatur','Buka config.js dan isi appUrl dengan URL Google Apps Script yang berakhiran /exec.');
-        return;
-      }
-      frame.src=url;
-      frame.style.display='block';
-      window.clearTimeout(window._loadTimer);
-      window._loadTimer=window.setTimeout(()=>{
-        if(loader.style.display!=='none') showError('Aplikasi belum merespons','Periksa URL /exec, koneksi internet, dan pengaturan akses Web App.');
-      },15000);
-    }
-    frame.addEventListener('load',()=>{window.clearTimeout(window._loadTimer);loader.style.display='none';});
-    retryBtn.addEventListener('click',loadApp);
-    window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;installBtn.style.display='block';});
-    installBtn.addEventListener('click',async()=>{
-      if(!deferredPrompt){notice.style.display='block';return;}
-      deferredPrompt.prompt();
-      try{await deferredPrompt.userChoice}catch(e){}
-      deferredPrompt=null;installBtn.style.display='none';
-    });
-    window.addEventListener('appinstalled',()=>{installBtn.style.display='none';});
-    function hideNotice(){notice.style.display='none'}
-    if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
-    loadApp();
-  </script>
+<div class="app">
+  <section id="loader" class="loader">
+    <div class="logo-box"><img src="./icon-512.png" alt="Logo UPTD SDN 34 Parepare"></div>
+    <div class="school">UPTD SDN 34 PAREPARE</div>
+    <div class="loader-title">Presensi Guru</div>
+    <div id="loaderStatus" class="loader-status">Memuat aplikasi...</div>
+    <div id="loaderError" class="loader-error"></div>
+    <button id="retryBtn" class="retry" type="button">Coba Lagi</button>
+  </section>
+  <iframe id="appFrame" title="Presensi Guru - UPTD SDN 34 Parepare" allow="camera *; geolocation *; fullscreen *" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <button id="installBtn" class="install" type="button">📲 Pasang Aplikasi</button>
+</div>
+<script src="./config.js"></script>
+<script>
+(function(){
+ const frame=document.getElementById('appFrame'),loader=document.getElementById('loader'),status=document.getElementById('loaderStatus'),err=document.getElementById('loaderError'),retry=document.getElementById('retryBtn'),install=document.getElementById('installBtn');
+ let deferredPrompt=null;
+ function showError(title,msg){status.textContent=title;err.textContent=msg;err.style.display='block';retry.style.display='inline-block'}
+ function loadApp(){
+   err.style.display='none';retry.style.display='none';loader.style.display='flex';frame.style.display='none';
+   const url=String(window.APP_CONFIG&&window.APP_CONFIG.appUrl||'').trim();
+   if(!/^https:\/\//i.test(url)||!/\/exec(?:[?#].*)?$/i.test(url)){showError('URL Web App belum valid','Periksa config.js dan pastikan appUrl berakhiran /exec.');return}
+   frame.src=url;frame.style.display='block';
+   clearTimeout(window.__pwaLoadTimer);window.__pwaLoadTimer=setTimeout(()=>{if(loader.style.display!=='none')showError('Aplikasi belum merespons','Periksa deployment Apps Script dan koneksi internet.')},20000);
+ }
+ frame.addEventListener('load',()=>{clearTimeout(window.__pwaLoadTimer);loader.style.display='none'});
+ retry.addEventListener('click',loadApp);
+ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;install.style.display='block'});
+ install.addEventListener('click',async()=>{if(!deferredPrompt)return;const p=deferredPrompt;deferredPrompt=null;install.style.display='none';try{p.prompt();await p.userChoice}catch(e){}});
+ window.addEventListener('appinstalled',()=>install.style.display='none');
+ if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{}));
+ loadApp();
+})();
+</script>
 </body>
 </html>
